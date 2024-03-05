@@ -1,0 +1,1 @@
+various exercises with python
