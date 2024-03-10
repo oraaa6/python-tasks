@@ -1,9 +1,28 @@
 
 # Initializing our blockchain list
+genesis_block = {'previous_hash': '', 'index': 0, 'transictions': []}
+blockchain = [genesis_block]
+open_transations = []
+owner = 'Ola'
+participants = {'Ola'} # usage of set
 
-blockchain = []
-
-
+def hash_block(block):
+    return '-'.join([str(block[key]) for key in block]) # usage of list comprehensions with dictionary //  '-'.join([str(last_block[key]) for key in last_block]) takse list as an argument an join by character (here: -)
+    
+    
+def get_balance(participant):
+    tx_sender = [[tx['amount'] for tx in block['transictions'] if tx['sender'] == participant] for block in blockchain] # nested list comprehensions
+    amount_sent = 0
+    for tx in tx_sender:
+        if len(tx) > 0:
+            amount_sent+= tx[0]
+    tx_recipient = [[tx['amount'] for tx in block['transictions'] if tx['recipient'] == participant] for block in blockchain]
+    amount_received = 0
+    for tx in tx_recipient:
+        if len(tx) > 0:
+            amount_received+= tx[0]
+    return amount_received - amount_sent
+    
 def get_last_blockchain_value():
     """ Returns the last value of current blockchain. """
     if len(blockchain) < 1:
@@ -11,20 +30,31 @@ def get_last_blockchain_value():
     return blockchain[-1]
 
 
-def add_transation(transaction_amount, last_transaction = [1]): 
+def add_transation(recipient, sender=owner, amount=1.0): 
     """ Apend a new value as well as the last blockchain value to the blockchain. 
     Arguments:
-        :transaction_amount: The amount that should be added.
-        :last_transaction: The last blockchain transaction (default[1]).
+        :sender: The sender of the coins.
+        :recipient: The recipient of the coins.
+        :amount: The amount of coins sent with transaction (default = 1.0)
     """
-    if last_transaction == None:
-        last_transaction = [1]
-    blockchain.append([last_transaction, transaction_amount])
+    transaction ={'sender': sender, 'recipient': recipient, 'amount': amount}  # Dictionary
+    open_transations.append(transaction)
+    participants.add(sender) # adding to set
+    participants.add(recipient) # adding to set
+ 
+def mine_block():
+    last_block = blockchain[-1]
+    hashed_block = hash_block(last_block)
+    block = {'previous_hash': hashed_block, 'index': len(blockchain), 'transictions': open_transations}
+    blockchain.append(block)
+    return True
  
 
 def get_transation_value():
     """ Returns the input of the user (a new transaction amount) as a float"""
-    return float(input('Your transaction amount please: '))
+    tx_recipient = input('Enter the recipient of the transaction: ')
+    tx_amount = float(input('Your transaction amount please: '))
+    return tx_recipient, tx_amount # Tuple - when we have more than 1 value, we can omit (). Empty tulple - ()
 
 
 def get_user_choice():
@@ -38,36 +68,40 @@ def print_blockchain_elements():
         print('-' * 20)
 
 def verify_chain():
-    is_valid = True
-    for block_index in range(len(blockchain)):
-        if block_index == 0:
-            continue # if block index is 0, skip this iteration
-        elif blockchain[block_index][0] == blockchain[block_index - 1]:
-                is_valid = True
-        else: 
-                is_valid = False
-    return is_valid
-    
-tx_amount = get_transation_value()
-add_transation(tx_amount)
+    for (index, block) in enumerate(blockchain): # enumerate() gives back a tuple which contains two pieces of information: index and element
+        if index == 0:
+            continue
+        if block['previous_hash'] != hash_block(blockchain[index - 1]):
+            return False
+    return True
+
 
 waiting_for_input = True
 
 while waiting_for_input:
     print('Please choose')
     print('1: Add a new transaction value')
-    print('2: Output the blockchain blocks')
+    print('2: Mine a new block')
+    print('3: Output the blockchain blocks')
+    print('4: Output participants')
     print('h: Manipulate the chain')
     print('q: Quit')
     user_choice = get_user_choice()
     if user_choice == '1':
-        tx_amount = get_transation_value()
-        add_transation(tx_amount, get_last_blockchain_value())
+        tx_data = get_transation_value()
+        recipient, amount = tx_data # refering to tuple - we pull out first value of the tuple and store in 'recipient' variable, and the second value - store in 'amount' value
+        add_transation(recipient, amount=amount)
+        print(open_transations)
     elif user_choice == '2':
+        if mine_block():
+            open_transations = []
+    elif user_choice == '3':
       print_blockchain_elements()
+    elif user_choice == '4':
+      print(participants)
     elif user_choice == 'h':
         if len(blockchain) >=1:
-            blockchain[0] = [2]
+            blockchain[0] = {'previous_hash': '', 'index': 0, 'transictions': [{'sender': 'Kuba', 'recipient': 'Agnieszka', 'amount': 2.0}]}
     elif user_choice == 'q':
         waiting_for_input = False
     else: 
@@ -76,6 +110,7 @@ while waiting_for_input:
         print_blockchain_elements()
         print ('Invalid blockchain!')
         break
+    print(get_balance('Ola'))
 else: 
     print('User left!')
     

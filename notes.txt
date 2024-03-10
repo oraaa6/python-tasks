@@ -1,0 +1,31 @@
+--------------------------------------------------------
+Iterables Overview:
+1. List ['Milk', 'Honey', 'Milk'] - mutalbe, ordered list, duplicates allowed, mostly only one type;
+2. Set {'Milk', 'Honey'} - mutable, unordered list, no duplicates, mostly only one type;
+3. Tuple ('Milk', 'Honey') - immutable, ordered list, duplicates allowed, often mixed types; (e.g. managing hardcoded data);
+4. Dictionary {'name': 'Milk', 'n': 2} - mutable, unordered map, no duplicate keys, often mixed types;
+
+---------------------------------------------------------
+List comprehensions
+ = when you want to create a new list based on the values of an existing list, eg.:
+
+simple_list = [1, 2, 3, 4]
+doubled_simple_list = [el * 2 for el in simple_list]
+output -> [2, 4, 6, 8]
+
+Original list stay immutable
+
+with 'if' condition:
+simple_list = [1, 2, 3, 4]
+doubled_simple_list = [el * 2 for el in simple_list if el % 2 == 0] ---> duplicate element if it is divisible by 2
+output -> [2, 4, 6, 8]
+
+----------------------------------------------------------
+Dict (Dictionary) comprehensions
+= is an elegant and concise way to create dictionaries, eg:
+
+stats = [('age, 25), (weight: 55), (height: 170)]
+dict_stats = {key: value for (key, value) in stats}
+output -> {'age': 25, 'weight': 55, 'height': 170}
+
+----------------------------------------------------------
