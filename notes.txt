@@ -29,3 +29,111 @@ dict_stats = {key: value for (key, value) in stats}
 output -> {'age': 25, 'weight': 55, 'height': 170}
 
 ----------------------------------------------------------
+
+How to copy list? Ragne selector
+":" is a range selector
+
+my_list =[a, b, c, d]
+dup_list = my_list[:] -> returns a new list
+
+dup_list = my_list[0:1] => returns [a, b] (it starts with index 0)
+dup_list = my_list[:-1] => returns [a, b, c] (omit first index - default 0, -1 -> omit last value)
+
+it works the same with tuples:
+
+tuple = (1, 2, 3, 4)
+dup_tuple = tuple[0:2] => returns (1, 2)
+
+Deep vs Shallow copy:
+
+stats = [{'name': 'Agnieszka'}, {'age': 15}]
+copied_stats = stats[:]
+copied_stats[0]['name'] = 'Kuba'
+print(copied_stats) => [{'name': 'Kuba'}, {'age': 15}] // correct!
+print(stats) => [{'name': 'Kuba'}, {'age': 15}] // wrong! it is because Range Selector creates only SHALLOW COPY! It copied only list, not nested structures in the list
+
+----------------------------------------------------------
+
+is vs ==
+
+simple_list = [1, 2, 3, 4]
+second_list [1, 2, 3, 4]
+simple_list == second_list -> returns True because it compares only values
+simple_list is second_list -> returns False because it compares references
+
+----------------------------------------------------------
+
+all & any
+= using for boolean checks
+new_list = [True, True, False]
+any(new_list) -> returns True, because it checks if there are at least one true value. 
+all(new_list) -> returns False, because it checks if there are all true values.
+
+example:
+number_list = [1, 2, 3, -5]
+all([el > 0 for el in number_list]) -> '[el > 0 for el in number_list]' returns [True, True, True, False] and all checks if all values are true
+
+--------------------------------------------------------
+
+Unpacking list:
+
+simple_list = [1, 2, 3]
+a, b, c = simple_list // correct! a = 1, b = 2, c = 3
+a, b = simple_list // wrong! we need to unpack all elements from the list
+
+-------------------------------------------------------
+
+Set => List comprehensions 
+
+new_set = {'Agnieszka', 'Kuba'}
+new_list = [el for el in new_set] -> returns ['Agnieszka', 'Kuba']
+
+loops works for sets:
+for el in new_set:
+    print(el)  -> rerutns 'Agnieszka', 'Kuba'
+
+indexing is not supported by sets! (new_set[0] - it won't work!)
+
+unpacking works for sets:
+a, b, c = new_set // correct! a = Agnieszka, b = Kuba
+
+-------------------------------------------------------
+
+Tuple => List comprehensions 
+
+new_tuple = (1, 2, 3)
+new_list = [el for el in new_tuple] -> returns [1, 2, 3]
+loops works for tuples:
+for el in new_tuple:
+    print(el)  -> rerutns 1, 2, 3
+
+indexing works for tuples:
+new_tuple[0] - returns 1
+
+unpacking works for tuples:
+a, b, c = new_tuple // correct! a = 1, b = 2, c = 3
+
+
+-------------------------------------------------------
+
+Dictionary => List comprehensions 
+
+new_dict = {'name': 'Kuba', 'age': 15}
+new_list = [el for el in new_dict] -> returns ['name', 'age'] - here we can only keys here, but when we want to get access to all items:
+new_list = [(k, el) for (k, el) in new_dict.items()] -> returns [{'name': 'Kuba'}, {'age': 15}]
+
+loops works for dictionary:
+for el in new_dict:
+    print(el)  -> rerutns 'name', 'age'
+
+for el in new_dict.values():
+    print(el)  -> rerutns 'Kuba', 15
+
+for el in new_dict.items():
+    print(el)  -> rerutns 'name', 'Kuba', 'age', 15
+
+indexing works for dictionary but only by keyname:
+new_dict['name'] - returns 'Kuba'
+
+unpacking works for dictionary:
+a, b = new_dict // correct! a = 'name', b = 'age'
