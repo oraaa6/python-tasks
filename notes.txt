@@ -137,3 +137,41 @@ new_dict['name'] - returns 'Kuba'
 
 unpacking works for dictionary:
 a, b = new_dict // correct! a = 'name', b = 'age'
+
+-----------------------------------------------------
+Strings
+
+How add variable to string?
+name = 'Kuba'
+age 25
+text = 'I am {} and I am {} years old'.format(name, age)
+text = f'I am {} and I am {} years old'
+text = 'I am {1} and I am {0} years old'.format(name, age) - it takes 0 as name and 1 as age - like an index
+text = 'I am {name} and I am {years} years old'.format(name=name, years=age) - it takes 0 as name and 1 as age - like an index
+=> 'I am Kuba and I am 25 years old'
+
+funds = 150.934
+text = 'Funds: {:f}'.format(funds) => 'Funds: 150.93400' - floating number
+text = 'Funds: {:1f}'.format(funds) => 'Funds: 151.0' 
+
+a = [1, 2, 3]
+text = 'Some text: {} {} {}'.format(*a) ===> 'Some text: 1 2 3'
+'I\'m Ola' => I'm Ola
+
+-------------------------------------------------------
+
+Map function
+
+simple_list = [1, 2, 3, 4]
+def multiply(el):
+    return el * 2
+
+list(map(multiply ,simple_list)) ==> [2, 4, 6, 8]
+list(map(str ,simple_list)) ==> ['2', '4', '6', '8']
+
+multiply with lambda functions:
+list(map(lambda el: el * 2,simple_list)) ==> [2, 4, 6, 8]
+
+
+-------------------------------------------------------
+
