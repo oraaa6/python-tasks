@@ -175,3 +175,17 @@ list(map(lambda el: el * 2,simple_list)) ==> [2, 4, 6, 8]
 
 -------------------------------------------------------
 
+with open('demo.txt', mode  ='r') as file:
+line = file.readline()
+while line:
+    print(line)
+    line = file.readline()
+
+when we open file, we should remember, to close file at the end -> `close()`, unless you use `with`
+
+-------------------------------------------------------
+
+pickle vs json
+pickle - works for all python data types, serializes data in binary format
+
+json - only works for a limited set of python data types, converts data to text
