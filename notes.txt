@@ -189,3 +189,17 @@ pickle vs json
 pickle - works for all python data types, serializes data in binary format
 
 json - only works for a limited set of python data types, converts data to text
+
+-------------------------------------------------------
+
+OOP 
+
+special methods in classes: 
+
+__init__() - constructor
+__str__() - string output
+__repr__() - general output
+__dict__ - convert do dictionary
+
+all methods are called by python when we execute my class
+
