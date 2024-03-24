@@ -203,3 +203,29 @@ __dict__ - convert do dictionary
 
 all methods are called by python when we execute my class
 
+-------------------------------------------------------
+
+Attributes vs Properties (OOP)
+
+Attributes:
+
+class MyMath:
+    result = 5
+
+    __init__(self):
+    self.name = 'Ola'
+
+Properties:
+
+class MyMath:
+    __init__(self):
+    self.name = 'Ola'
+
+    @property # -> read the value
+    def name(self):
+    return self.__name # it is __name, not name, because when we add @property, python automatically create it as a private value
+
+    @name.setter # -> set the value
+    def name(self, val):
+    self.__name = val
+
