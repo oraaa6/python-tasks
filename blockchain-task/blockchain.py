@@ -5,9 +5,9 @@ from collections import OrderedDict
 import json
 from block import Block
 from transaction import Transaction
-from verification import Verification
-
-from hash_util import hash_block
+from utility.hash_util import hash_block
+from utility.verification import Verification
+from wallet import Wallet
 
 # Initializing our blockchain list
 MINING_REWARD = 10
@@ -43,7 +43,7 @@ class Blockchain:
                 # We need to convert  the loaded data because Transactions should use OrderedDict
                 updated_blockchain = []
                 for block in blockchain:
-                    converted_tx = [Transaction(tx['sender'], tx['recipient'], tx['amount']) for tx in block['transactions'] ]
+                    converted_tx = [Transaction(tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in block['transactions'] ]
                     updated_block = Block(block['index'], block['previous_hash'], converted_tx, block['proof'], block['timestamp'])
                     updated_blockchain.append(updated_block)
                 self.chain = updated_blockchain # update chain with chain setter!
@@ -51,7 +51,7 @@ class Blockchain:
             # We need to convert  the loaded data because Transactions should use OrderedDict
                 updated_transactions = []
                 for tx in open_transactions:
-                    updated_transaction = Transaction(tx['sender'], tx['recipient'], tx['amount'])
+                    updated_transaction = Transaction(tx['sender'], tx['recipient'], tx['signature'], tx['amount'])
                     updated_transactions.append(updated_transaction)
                 self.__open_transactions = updated_transactions
         except (IOError, IndexError): # which error I want to handle - FileNotFoundError is part of IOError error
@@ -107,15 +107,17 @@ class Blockchain:
         return self.__chain[-1]
 
 
-    def add_transation(self, recipient, sender, amount=1.0): 
+    def add_transation(self, recipient, sender, signature, amount=1.0): 
         """ Apend a new value as well as the last blockchain value to the blockchain. 
         Arguments:
             :sender: The sender of the coins.
             :recipient: The recipient of the coins.
             :amount: The amount of coins sent with transaction (default = 1.0)
         """
+        if self.hosting_node == None:
+            return False
         # transaction ={'sender': sender, 'recipient': recipient, 'amount': amount} --> It can't be dictionary because we care about order and dictionaries may have random order
-        transaction = Transaction(sender, recipient, amount)
+        transaction = Transaction(sender, recipient, signature, amount)
     # To have always the same order, you can use OrderDict
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
@@ -125,11 +127,16 @@ class Blockchain:
     
  
     def mine_block(self):
+        if self.hosting_node == None:
+            return False
         last_block = self.__chain[-1]
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
-        reward_transaction = Transaction('MINING', self.hosting_node, MINING_REWARD)
+        reward_transaction = Transaction('MINING', self.hosting_node, '', MINING_REWARD)
         copied_transaction = self.__open_transactions[:]
+        for tx in copied_transaction: 
+            if not Wallet.verify_transaction(tx): 
+                return False
         copied_transaction.append(reward_transaction)
         block = Block(len(self.__chain), hashed_block, copied_transaction, proof)
         self.__chain.append(block)

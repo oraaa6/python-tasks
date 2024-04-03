@@ -229,3 +229,42 @@ class MyMath:
     def name(self, val):
     self.__name = val
 
+
+-------------------------------------------------------
+
+Creating packages
+
+e.g.:
+create util folder, and some files in it. To consider it as a package, I need to create __init__.py file. This file can be empty
+
+-------------------------------------------------------
+
+__pycache__ - holds the compiled code. If i change anything in any file, __pycache__ changes also because it's recompiled
+
+-------------------------------------------------------
+Controlling exports
+
+* - everything
+use _something to tell python to not to import it (when using *)
+use __all__ to control exports (when using *)
+
+I can add e.g. __all__ in __init__ file, to describe what can be imported with * from package
+
+-------------------------------------------------------
+Execution context & __name__
+
+__name__ - refers to the name of executed file, e.g. if I execute node.py and put print(__name__) into node.py, it prints: __main__,
+but when I put print(__name__) into blockchain.py it prints: blockchain
+
+-------------------------------------------------------
+Installing Third Party packages 
+
+python -m pip install nameofpackage
+
+In python, I can't install one package only that one project - it installed for every project, because it's installed on system
+Anaconda - tool, which helps with python packages. I can set different packages for different projects
+
+-------------------------------------------------------
+
+cmd "/K" C:\Users\Ola\anaconda3\Scripts\activate.bat C:\Users\Ola\anaconda3 - fix activate anaconda env 
+activate nameOfEnv
