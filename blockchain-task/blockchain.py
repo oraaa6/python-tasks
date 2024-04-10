@@ -90,6 +90,8 @@ class Blockchain:
 
     
     def get_balance(self):
+        if self.hosting_node == None:
+            return None
         participant = self.hosting_node
         tx_sender = [[tx.amount for tx in block.transactions if tx.sender == participant] for block in self.__chain] # nested list comprehensions
         open_tx_sender = [tx.amount for tx in self.__open_transactions if tx.sender == participant]
@@ -107,28 +109,35 @@ class Blockchain:
         return self.__chain[-1]
 
 
-    def add_transation(self, recipient, sender, signature, amount=1.0): 
-        """ Apend a new value as well as the last blockchain value to the blockchain. 
-        Arguments:
-            :sender: The sender of the coins.
-            :recipient: The recipient of the coins.
-            :amount: The amount of coins sent with transaction (default = 1.0)
-        """
-        if self.hosting_node == None:
+    def add_transaction(self, recipient, sender, signature, amount=1.0):
+            """ Append a new value as well as the last blockchain value to the blockchain.
+
+            Arguments:
+                :sender: The sender of the coins.
+                :recipient: The recipient of the coins.
+                :amount: The amount of coins sent with the transaction (default = 1.0)
+            """
+            # transaction = {
+            #     'sender': sender,
+            #     'recipient': recipient,
+            #     'amount': amount
+            # }
+            if self.hosting_node == None:
+                print('1')
+                return False
+            transaction = Transaction(sender, recipient, signature, amount)
+            if Verification.verify_transaction(transaction, self.get_balance):
+                self.__open_transactions.append(transaction)
+                self.save_data()
+                return True
+            print('2')
             return False
-        # transaction ={'sender': sender, 'recipient': recipient, 'amount': amount} --> It can't be dictionary because we care about order and dictionaries may have random order
-        transaction = Transaction(sender, recipient, signature, amount)
-    # To have always the same order, you can use OrderDict
-        if Verification.verify_transaction(transaction, self.get_balance):
-            self.__open_transactions.append(transaction)
-            self.save_data()
-            return True
-        return False
+
     
  
     def mine_block(self):
         if self.hosting_node == None:
-            return False
+            return None
         last_block = self.__chain[-1]
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
@@ -136,13 +145,13 @@ class Blockchain:
         copied_transaction = self.__open_transactions[:]
         for tx in copied_transaction: 
             if not Wallet.verify_transaction(tx): 
-                return False
+                return None
         copied_transaction.append(reward_transaction)
         block = Block(len(self.__chain), hashed_block, copied_transaction, proof)
         self.__chain.append(block)
         self.__open_transactions = []
         self.save_data()
-        return True
+        return block
  
 
 # break - exit loop before it's finished

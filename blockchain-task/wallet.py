@@ -16,26 +16,32 @@ class Wallet:
 
     
     def save_keys(self):
+        """Saves the keys to a file (wallet.txt)."""
         if self.public_key != None and self.private_key != None:
-            try: 
+            try:
                 with open('wallet.txt', mode='w') as f:
                     f.write(self.public_key)
                     f.write('\n')
                     f.write(self.private_key)
+                return True
             except (IOError, IndexError):
                 print('Saving wallet failed...')
+                return False
             
     
     def load_keys(self):
-        try: 
+        """Loads the keys from the wallet.txt file into memory."""
+        try:
             with open('wallet.txt', mode='r') as f:
                 keys = f.readlines()
-                public_key = keys[0][:-1] # select whole line without last character - \n
+                public_key = keys[0][:-1]
                 private_key = keys[1]
                 self.public_key = public_key
                 self.private_key = private_key
+            return True
         except (IOError, IndexError):
             print('Loading wallet failed...')
+            return False
  
     
     def generate_keys(self):
